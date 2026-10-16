@@ -36,8 +36,6 @@ The client proxies `/api` requests to the API, so the browser only ever talks to
 | `npm run build`        | Typechecks and builds both workspaces |
 | `npm run typecheck`    | Typechecks both workspaces            |
 | `npm run lint`         | Runs ESLint over the whole repository |
-| `npm run format`       | Formats everything with Prettier      |
-| `npm run format:check` | Checks formatting without writing     |
 
 ## Layout
 
