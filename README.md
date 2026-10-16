@@ -13,6 +13,8 @@ A web app to administer a flower and vegetable garden.
 npm install
 ```
 
+Then create the API configuration file by copying `server/.env.example` to `server/.env`, and fill in your MySQL credentials. The file is gitignored, so real values never reach the repository.
+
 ## Development
 
 ```
@@ -27,6 +29,20 @@ Starts both apps together:
 | API    | http://localhost:3001 |
 
 The client proxies `/api` requests to the API, so the browser only ever talks to port 5173.
+
+## Configuration
+
+Every setting comes from environment variables, read by the API from `server/.env`. `server/.env.example` lists them all.
+
+| Variable    | What it sets                    | Default |
+| ----------- | ------------------------------- | ------- |
+| `PORT`      | Port the API listens on         | `3001`  |
+| `LOG_LEVEL` | `debug`, `info`, `warn`, `error` | `info`  |
+| `DB_HOST`   | MySQL host                      |         |
+| `DB_PORT`   | MySQL port                      | `3306`  |
+| `DB_USER`   | MySQL user                      |         |
+| `DB_PASSWORD` | MySQL password, may be empty   |         |
+| `DB_NAME`   | MySQL database to use           |         |
 
 ## Scripts
 
