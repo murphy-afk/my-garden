@@ -8,6 +8,8 @@ Binding rules for anyone or anything working on this repository. They apply to c
 - **No emdashes.** Do not use the em dash character. Do not use the en dash as a substitute for punctuation either. Split the sentence or use a comma, colon or parentheses.
 - **No line that consists only of `>` or `/>`.** Close JSX tags on the line before. Write `<Component />` on one line, or open and close on the same line. Never leave a dangling closing bracket on its own line.
 
+There is no formatter in this project, so this rule rests on how JSX is written by hand. Keep a tag short enough to fit on one line. When a tag genuinely has to span lines, attach the closing bracket to the last attribute line, for example `session={session} />`, instead of dropping it onto a line of its own. If a tag is too long to do that, shorten it by extracting the expression into a variable or a small helper function.
+
 Good:
 
 ```tsx
@@ -31,6 +33,7 @@ Rewrite any of those as a single line, or keep the parent open and close the chi
 ## Git
 
 - **Never commit without explicit permission.** No commits, no pushes, no rebases, no force pushes unless the user has clearly said so in the current conversation. Asking once does not grant permission for later commits.
+- **Commit messages describe the change, not the plan.** Say what was done, for example "add garden area layout" or "track seed saving after harvest". Never prefix a message with a session number such as `S03:`, and do not refer to roadmap sessions anywhere in a message.
 - Do not delete or rewrite files the user created without asking first.
 
 ## Scope

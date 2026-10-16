@@ -61,7 +61,7 @@ Everything the brief asks to track maps onto Planting plus one of Milestone, Car
 **Goal**: an empty but correctly configured repo.
 
 - Init git, `.gitignore`, Node workspaces with `client` and `server` folders.
-- ESLint + Prettier for both sides, TypeScript strict mode, shared `tsconfig.base.json`.
+- ESLint for both sides, TypeScript strict mode, shared `tsconfig.base.json`.
 - Root `README.md` with run instructions.
 - Add `AGENTS.md` with the project rules.
 
