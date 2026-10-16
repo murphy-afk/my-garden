@@ -53,6 +53,7 @@ Rewrite any of those as a single line, or keep the parent open and close the chi
 - No `any` unless there is a written reason next to it.
 - All API input is validated on the server before it touches the database.
 - All database writes go through the transaction helper.
+- **Raw inserts must set `updatedAt`.** Prisma gives that column no database default because the client normally sets it, so a hand written `INSERT` fails with `ER_NO_DEFAULT_FOR_FIELD` unless it supplies the value. `createdAt` does have a default and can be omitted.
 - Errors reach the standard JSON error shape. Do not swallow exceptions.
 - No secrets in the repository. Configuration comes from environment variables, and `.env.example` documents every variable.
 

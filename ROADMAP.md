@@ -19,10 +19,10 @@ Chosen because it matches the stated preference (React + Express) and keeps the 
 | Backend    | Express + TypeScript (Node 20+)             |                                                             |
 | Database   | MySQL 8                                     | Required by the brief                                       |
 | Driver     | mysql2/promise connection pool              |                                                             |
-| Migrations | Prisma Migrate (or Knex, decided in S02)    | Plain SQL migrations, no ORM magic on the query side        |
+| Migrations | Prisma Migrate                                 | Schema versioning only, no ORM at runtime                 |
 | Testing    | Vitest (frontend), Vitest + supertest (API) |                                                             |
 
-Open decision to confirm in S02: Prisma Migrate for schema migrations, or Knex if a lighter tool is preferred. The app code talks to MySQL through plain SQL either way.
+Migration tooling decided in S02: Prisma Migrate. The schema lives in `server/prisma/schema.prisma` and migrations in `server/prisma/migrations`, applied with `npm run db:migrate --workspace server`. Prisma is used for schema versioning only. The API reads and writes through a mysql2 connection pool with hand written SQL, so there is no ORM at runtime and no generated client to keep in sync.
 
 Deliberately deferred: authentication and multi-user support. The brief describes a single gardener, so the first version is a single user app. This is revisited in S14.
 

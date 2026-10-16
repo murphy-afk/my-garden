@@ -1,0 +1,295 @@
+// Garden database schema.
+// Business dates use MySQL DATE so a planting date never carries a time or a
+// timezone offset. Audit fields keep full timestamps.
+//
+// Prisma is used for migrations only. The API talks to MySQL through a mysql2
+// connection pool, so there is deliberately no generator block here.
+
+datasource db {
+  provider = "mysql"
+}
+
+enum SpeciesCategory {
+  VEGETABLE
+  FRUIT
+  FLOWER
+  HERB
+}
+
+enum LifeCycle {
+  ANNUAL
+  BIENNIAL
+  PERENNIAL
+}
+
+model Species {
+  id            Int             @id @default(autoincrement())
+  name          String          @db.VarChar(120)
+  variety       String?         @db.VarChar(120)
+  category      SpeciesCategory
+  scientificName String?        @db.VarChar(160)
+  cycle         LifeCycle       @default(ANNUAL)
+  spacingCm     Int?
+  daysToFlower  Int?
+  daysToHarvest Int?
+  notes         String?         @db.Text
+  archived      Boolean         @default(false)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  plantings Planting[]
+
+  @@unique([name, variety])
+  @@index([category])
+  @@index([archived])
+}
+
+enum AreaKind {
+  BED
+  RAISED_BED
+  POT
+  BORDER
+  GREENHOUSE
+  WINDOWSILL
+  OTHER
+}
+
+model GardenArea {
+  id        Int       @id @default(autoincrement())
+  name      String    @db.VarChar(120)
+  kind      AreaKind
+  widthCm   Int
+  depthCm   Int
+  gridX     Int
+  gridY     Int
+  notes     String?   @db.Text
+  archived  Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  plantings Planting[]
+
+  @@unique([name])
+  @@index([archived])
+}
+
+enum PlantingSource {
+  SEED
+  SEEDLING
+  CUTTING
+  BARE_ROOT
+  DIVISION
+  OTHER
+}
+
+enum PlantingStatus {
+  ACTIVE
+  ENDED
+}
+
+model Planting {
+  id        Int             @id @default(autoincrement())
+  speciesId Int
+  areaId    Int
+  plantedOn DateTime        @db.Date
+  quantity  Int             @default(1)
+  source    PlantingSource
+  status    PlantingStatus  @default(ACTIVE)
+  endedOn   DateTime?       @db.Date
+  notes     String?         @db.Text
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  species   Species @relation(fields: [speciesId], references: [id], onDelete: Restrict)
+  area      GardenArea @relation(fields: [areaId], references: [id], onDelete: Restrict)
+
+  milestones Milestone[]
+  careLogs   CareLog[]
+  issues     Issue[]
+  harvests   Harvest[]
+
+  @@index([areaId])
+  @@index([speciesId])
+  @@index([plantedOn])
+  @@index([status])
+}
+
+enum MilestoneKind {
+  SOWN
+  GERMINATED
+  TRANSPLANTED
+  FIRST_FLOWER
+  FIRST_FRUIT
+  BEGINNING_TO_DECLINE
+  DIED
+  HARVEST_ENDED
+}
+
+model Milestone {
+  id         Int            @id @default(autoincrement())
+  plantingId Int
+  kind       MilestoneKind
+  occurredOn DateTime       @db.Date
+  note       String?        @db.Text
+  createdAt  DateTime       @default(now())
+
+  planting Planting @relation(fields: [plantingId], references: [id], onDelete: Cascade)
+
+  @@index([plantingId, occurredOn])
+  @@index([kind])
+}
+
+enum CareKind {
+  WATERED
+  PRUNED
+  TIED
+  FED
+  MULCHED
+  REPPOTTED
+  THINNED
+  OTHER
+}
+
+model CareLog {
+  id          Int       @id @default(autoincrement())
+  plantingId  Int
+  kind        CareKind
+  performedOn DateTime  @db.Date
+  amount      Decimal?  @db.Decimal(8, 2)
+  note        String?   @db.Text
+  createdAt   DateTime  @default(now())
+
+  planting Planting @relation(fields: [plantingId], references: [id], onDelete: Cascade)
+
+  @@index([plantingId, kind, performedOn])
+  @@index([performedOn])
+}
+
+enum IssueKind {
+  PEST
+  DISEASE
+  NUTRIENT_DEFICIENCY
+  WEATHER_DAMAGE
+  PHYSICAL_DAMAGE
+  COMPETITION
+  OTHER
+}
+
+enum IssueSeverity {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum IssueStatus {
+  OPEN
+  MONITORING
+  RESOLVED
+}
+
+model Issue {
+  id          Int           @id @default(autoincrement())
+  plantingId  Int
+  kind        IssueKind
+  title       String        @db.VarChar(200)
+  description String?       @db.Text
+  severity    IssueSeverity
+  status      IssueStatus   @default(OPEN)
+  openedOn    DateTime      @db.Date
+  resolvedOn  DateTime?     @db.Date
+  resolution  String?       @db.Text
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  planting Planting @relation(fields: [plantingId], references: [id], onDelete: Cascade)
+
+  @@index([plantingId])
+  @@index([status])
+  @@index([openedOn])
+}
+
+enum HarvestUnit {
+  GRAM
+  KILOGRAM
+  PIECE
+  BUNCH
+  BUCKET
+  LITRE
+}
+
+model Harvest {
+  id          Int          @id @default(autoincrement())
+  plantingId  Int
+  harvestedOn DateTime     @db.Date
+  quantity    Decimal      @db.Decimal(10, 2)
+  unit        HarvestUnit
+  note        String?      @db.Text
+  createdAt   DateTime     @default(now())
+
+  planting  Planting    @relation(fields: [plantingId], references: [id], onDelete: Cascade)
+  seedSaves SeedSave[]
+
+  @@index([plantingId])
+  @@index([harvestedOn])
+  @@index([unit])
+}
+
+enum SeedStorage {
+  PAPER_ENVELOPE
+  GLASS_JAR
+  PLASTIC_BAG
+  FROZEN
+  OTHER
+}
+
+model SeedSave {
+  id              Int         @id @default(autoincrement())
+  harvestId       Int
+  kept            Boolean     @default(true)
+  quantity        Decimal?    @db.Decimal(10, 2)
+  storageMethod   SeedStorage
+  storageLocation String?     @db.VarChar(160)
+  savedOn         DateTime?   @db.Date
+  note            String?     @db.Text
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  harvest Harvest @relation(fields: [harvestId], references: [id], onDelete: Cascade)
+
+  @@index([harvestId])
+  @@index([kept])
+}
+
+enum GuideCategory {
+  VEGETABLE_GROWING
+  FLOWER_CARE
+  PESTS_AND_DISEASE
+  SOIL_AND_COMPOST
+  SEED_SAVING
+  GENERAL
+}
+
+model Guide {
+  id          Int            @id @default(autoincrement())
+  title       String         @db.VarChar(200)
+  slug        String         @unique @db.VarChar(220)
+  category    GuideCategory
+  summary     String?        @db.Text
+  body        String         @db.LongText
+  sourceName  String?        @db.VarChar(160)
+  sourceUrl   String?        @db.VarChar(500)
+  publishedOn DateTime?      @db.Date
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  tags Tag[]
+
+  @@index([category])
+}
+
+model Tag {
+  id   Int    @id @default(autoincrement())
+  name String @unique @db.VarChar(80)
+
+  guides Guide[]
+}
