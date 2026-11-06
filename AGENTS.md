@@ -34,6 +34,8 @@ Rewrite any of those as a single line, or keep the parent open and close the chi
 
 - **Never commit without explicit permission.** No commits, no pushes, no rebases, no force pushes unless the user has clearly said so in the current conversation. Asking once does not grant permission for later commits.
 - **Commit messages describe the change, not the plan.** Say what was done, for example "add garden area layout" or "track seed saving after harvest". Never prefix a message with a session number such as `S03:`, and do not refer to roadmap sessions anywhere in a message.
+- **Commit messages contain minimal information, an average of 12 words.** Keep each message to about twelve words or fewer. Say what changed; leave context, reasoning and justification out of the message.
+- **Keep commits small and divided by logic.** Do not bundle a whole session into one commit. Each commit holds one coherent change, for example schema, API and UI as separate commits.
 - Do not delete or rewrite files the user created without asking first.
 
 ## Scope
