@@ -3,6 +3,7 @@ import type { Database } from './db/pool.js';
 import { errorHandler, notFoundHandler } from './errors.js';
 import { requestLogger } from './logger.js';
 import { createHealthRouter } from './routes/health.js';
+import { createSpeciesRouter } from './routes/species.js';
 
 /**
  * Builds the express application without listening, so the same wiring is used
@@ -19,6 +20,7 @@ export function createApp(database: Database) {
   app.use(requestLogger());
   app.use(express.json());
   app.use('/api', createHealthRouter(database));
+  app.use('/api', createSpeciesRouter(database));
   app.use(notFoundHandler);
   app.use(errorHandler);
 

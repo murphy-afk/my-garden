@@ -85,3 +85,18 @@ export function createDatabase(config: DatabaseConfig): Database {
 
   return { query, withTransaction, ping, close };
 }
+
+/**
+ * Reads rows on a transaction's connection, where `query` cannot reach.
+ * The rows are cast the same way `query` casts them: the driver types them
+ * from the statement text, which it cannot know here, so the caller names
+ * the shape.
+ */
+export async function queryRows<T>(
+  connection: PoolConnection,
+  sql: string,
+  parameters: QueryParameters = [],
+): Promise<T> {
+  const [rows] = await connection.query(sql, parameters);
+  return rows as unknown as T;
+}
