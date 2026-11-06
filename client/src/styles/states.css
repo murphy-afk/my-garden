@@ -1,0 +1,60 @@
+/*
+ * Loading, empty and error states.
+ * Every list, form and chart uses these three shapes, so they live here
+ * rather than in any one area's stylesheet.
+ */
+
+.state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-6);
+  background: var(--color-surface);
+  border: 1px dashed var(--color-border-strong);
+  border-radius: var(--radius-lg);
+  text-align: center;
+}
+
+.state__title {
+  margin: 0;
+  font-size: var(--text-lg);
+}
+
+.state__text {
+  margin: 0;
+  max-width: 32rem;
+  color: var(--color-text-muted);
+}
+
+.state__icon {
+  color: var(--color-accent);
+}
+
+.state--error {
+  border-style: solid;
+  border-color: var(--color-danger);
+  background: var(--color-danger-soft);
+}
+
+.state--error .state__title,
+.state--error .state__text {
+  color: var(--color-danger);
+}
+
+.state__spinner {
+  color: var(--color-accent);
+  animation: state-spin 1s linear infinite;
+}
+
+@keyframes state-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .state__spinner {
+    animation: none;
+  }
+}

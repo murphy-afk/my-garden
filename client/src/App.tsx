@@ -1,4 +1,5 @@
 import { BrowserRouter, NavLink, Navigate, Route, Routes } from 'react-router';
+import type { ReactNode } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import {
   BookOpen,
@@ -11,13 +12,17 @@ import {
   Wheat,
 } from 'lucide-react';
 import { PlaceholderPage } from './components/PlaceholderPage';
+import { SpeciesPage } from './pages/SpeciesPage';
 
 type NavItem = {
   path: string;
   label: string;
   description: string;
-  session: string;
   icon: LucideIcon;
+  /** Set while the section is still a placeholder. */
+  session?: string;
+  /** Set once the section has a real page. */
+  element?: ReactNode;
 };
 
 /**
@@ -43,8 +48,8 @@ const navItems: NavItem[] = [
     path: '/species',
     label: 'Species',
     description: 'The catalogue of flowers, vegetables, fruit and herbs that can be planted.',
-    session: 'S04',
     icon: Flower2,
+    element: <SpeciesPage />,
   },
   {
     path: '/issues',
@@ -87,10 +92,10 @@ function navLinkClass(isActive: boolean): string {
   return isActive ? 'nav__link nav__link--active' : 'nav__link';
 }
 
-/** Keeps the route JSX short enough to stay on one line. */
-function placeholderFor(item: NavItem) {
-  const { label, description, session } = item;
-  return <PlaceholderPage title={label} description={description} session={session} />;
+/** The real page once a section exists, otherwise its placeholder. */
+function sectionElement(item: NavItem) {
+  if (item.element !== undefined) return item.element;
+  return <PlaceholderPage title={item.label} description={item.description} session={item.session} />;
 }
 
 export function App() {
@@ -123,7 +128,7 @@ export function App() {
           <Routes>
             <Route path="/" element={<Navigate to="/garden" replace />} />
             {navItems.map((item) => (
-              <Route key={item.path} path={item.path} element={placeholderFor(item)} />
+              <Route key={item.path} path={item.path} element={sectionElement(item)} />
             ))}
           </Routes>
         </main>
