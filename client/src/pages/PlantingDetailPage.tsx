@@ -1,8 +1,16 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Link, useParams } from 'react-router';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { ArrowLeft, Flag, LoaderCircle, Pencil, RefreshCw, RotateCcw } from 'lucide-react';
+import { ArrowLeft, Flag, LoaderCircle, Milestone as MilestoneIcon, Pencil, Plus, RefreshCw, RotateCcw, Trash2 } from 'lucide-react';
 import { messageFor } from '../api/client';
+import { todayIsoDate } from '../api/date';
+import {
+  deleteMilestone,
+  listMilestones,
+  milestoneKeys,
+  milestoneLabel,
+  type Milestone,
+} from '../api/milestones';
 import {
   endPlanting,
   getPlanting,
@@ -10,8 +18,8 @@ import {
   plantingKeys,
   plantingName,
   reopenPlanting,
-  todayIsoDate,
 } from '../api/plantings';
+import { MilestoneForm, type MilestoneFormTarget } from './MilestoneForm';
 import { PlantingForm, type FormTarget } from './PlantingForm';
 import '../styles/plantings.css';
 
@@ -22,12 +30,15 @@ export function PlantingDetailPage() {
   const validId = rawId !== undefined && rawId !== '' && Number.isInteger(id) && id >= 1;
 
   const [formTarget, setFormTarget] = useState<FormTarget | null>(null);
+  const [milestoneTarget, setMilestoneTarget] = useState<MilestoneFormTarget | null>(null);
   const [ending, setEnding] = useState(false);
   const [endedOn, setEndedOn] = useState('');
   const editButtonRef = useRef<HTMLButtonElement>(null);
   const endButtonRef = useRef<HTMLButtonElement>(null);
   const reopenButtonRef = useRef<HTMLButtonElement>(null);
   const dateInputRef = useRef<HTMLInputElement>(null);
+  const addMilestoneRef = useRef<HTMLButtonElement>(null);
+  const milestoneTriggerRef = useRef<HTMLElement | null>(null);
   const queryClient = useQueryClient();
 
   const query = useQuery({
@@ -48,6 +59,23 @@ export function PlantingDetailPage() {
   const reopen = useMutation({
     mutationFn: () => reopenPlanting(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: plantingKeys.all }),
+  });
+
+  // The timeline belongs to the planting, so it waits until one has loaded.
+  const milestones = useQuery({
+    queryKey: milestoneKeys.forPlanting(id),
+    queryFn: () => listMilestones(id),
+    enabled: validId && query.isSuccess,
+  });
+
+  const removeMilestone = useMutation({
+    mutationFn: (milestoneId: number) => deleteMilestone(milestoneId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: milestoneKeys.all });
+      // The row that held focus is about to disappear, so focus moves to the
+      // button that adds the next milestone.
+      addMilestoneRef.current?.focus();
+    },
   });
 
   // Once the planting has ended, the button that opened the end form is gone,
@@ -88,6 +116,25 @@ export function PlantingDetailPage() {
   function handleEndSubmit(event: FormEvent<HTMLFormElement>): void {
     event.preventDefault();
     end.mutate(endedOn);
+  }
+
+  function openAddMilestone(trigger: HTMLElement): void {
+    milestoneTriggerRef.current = trigger;
+    setMilestoneTarget({ mode: 'create', plantingId: id });
+  }
+
+  function openEditMilestone(milestone: Milestone, trigger: HTMLElement): void {
+    milestoneTriggerRef.current = trigger;
+    setMilestoneTarget({ mode: 'edit', milestone });
+  }
+
+  function closeMilestoneForm(): void {
+    setMilestoneTarget(null);
+    // The trigger may have left the timeline (an empty state collapsing away),
+    // so fall back to the section button, which is always there.
+    const trigger = milestoneTriggerRef.current;
+    if (trigger !== null && trigger.isConnected) trigger.focus();
+    else addMilestoneRef.current?.focus();
   }
 
   if (!validId) {
@@ -235,6 +282,98 @@ export function PlantingDetailPage() {
           <p className="planting__notes-body">{planting.notes}</p>
         </div>
       )}
+
+      <section className="planting__section" aria-labelledby="planting-timeline-heading">
+        <div className="planting__section-head">
+          <h2 id="planting-timeline-heading">Timeline</h2>
+          <button
+            ref={addMilestoneRef}
+            type="button"
+            className="button button--secondary"
+            onClick={(event) => openAddMilestone(event.currentTarget)}>
+            <Plus aria-hidden="true" size={16} /> Add milestone
+          </button>
+        </div>
+
+        {milestoneTarget !== null && (
+          <MilestoneForm target={milestoneTarget} onClose={closeMilestoneForm} />
+        )}
+
+        {removeMilestone.isError && <p className="alert" role="alert">{messageFor(removeMilestone.error)}</p>}
+
+        {milestones.isPending && (
+          <div className="state" role="status">
+            <LoaderCircle className="state__spinner" aria-hidden="true" size={24} />
+            <p className="state__text">Loading timeline...</p>
+          </div>
+        )}
+
+        {milestones.isError && (
+          <div className="state state--error" role="alert">
+            <h3 className="state__title">Could not load the timeline</h3>
+            <p className="state__text">{messageFor(milestones.error)}</p>
+            <button type="button" className="button button--secondary" onClick={() => milestones.refetch()}>
+              <RefreshCw aria-hidden="true" size={16} /> Try again
+            </button>
+          </div>
+        )}
+
+        {milestones.isSuccess && milestones.data.length === 0 && milestoneTarget === null && (
+          <div className="state">
+            <MilestoneIcon className="state__icon" aria-hidden="true" size={32} />
+            <h3 className="state__title">No milestones yet</h3>
+            <p className="state__text">
+              Record sowing, germinating, flowering and the rest as they happen.
+            </p>
+            <button
+              type="button"
+              className="button"
+              onClick={(event) => openAddMilestone(event.currentTarget)}>
+              <Plus aria-hidden="true" size={16} /> Add the first milestone
+            </button>
+          </div>
+        )}
+
+        {milestones.isSuccess && milestones.data.length > 0 && (
+          <ol className="timeline">
+            {milestones.data.map((milestone) => (
+              <li className="timeline__item" key={milestone.id}>
+                <span className="timeline__marker" aria-hidden="true" />
+                <div className="timeline__body">
+                  <p className="timeline__date">
+                    <time dateTime={milestone.occurredOn}>{milestone.occurredOn}</time>
+                  </p>
+                  <p className="timeline__kind">{milestoneLabel(milestone.kind)}</p>
+                  {milestone.note !== null && <p className="timeline__note">{milestone.note}</p>}
+                </div>
+                <div className="timeline__actions">
+                  <button
+                    type="button"
+                    className="button button--quiet button--icon"
+                    aria-label={`Edit ${milestoneLabel(milestone.kind)} milestone`}
+                    title="Edit"
+                    onClick={(event) => openEditMilestone(milestone, event.currentTarget)}>
+                    <Pencil aria-hidden="true" size={16} />
+                  </button>
+                  <button
+                    type="button"
+                    className="button button--quiet button--icon"
+                    aria-label={`Delete ${milestoneLabel(milestone.kind)} milestone`}
+                    title="Delete"
+                    disabled={removeMilestone.isPending && removeMilestone.variables === milestone.id}
+                    onClick={() => {
+                      if (window.confirm('Delete this milestone? This cannot be undone.')) {
+                        removeMilestone.mutate(milestone.id);
+                      }
+                    }}>
+                    <Trash2 aria-hidden="true" size={16} />
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ol>
+        )}
+      </section>
     </section>
   );
 }
