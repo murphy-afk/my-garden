@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { PlaceholderPage } from './components/PlaceholderPage';
 import { GardenPage } from './pages/GardenPage';
+import { IssuesPage } from './pages/IssuesPage';
 import { PlantingDetailPage } from './pages/PlantingDetailPage';
 import { PlantingsPage } from './pages/PlantingsPage';
 import { SpeciesPage } from './pages/SpeciesPage';
@@ -58,8 +59,8 @@ const navItems: NavItem[] = [
     path: '/issues',
     label: 'Issues',
     description: 'Pests, disease and other problems, tracked from open to resolved.',
-    session: 'S09',
     icon: Bug,
+    element: <IssuesPage />,
   },
   {
     path: '/harvests',
