@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router';
 import { messageFor, readFieldErrors } from '../api/client';
+import { todayIsoDate } from '../api/date';
 import { areaKeys, listAreas } from '../api/areas';
 import { speciesKeys, listSpecies } from '../api/species';
 import {
@@ -10,7 +11,6 @@ import {
   plantingKeys,
   plantingSources,
   plantingStatuses,
-  todayIsoDate,
   updatePlanting,
   type Planting,
   type PlantingInput,
