@@ -90,6 +90,15 @@ export function optionalInteger(body: unknown, field: string, rule: IntegerRule 
   return raw;
 }
 
+/** Reads a required whole number inside [min, max]. */
+export function requireInteger(body: unknown, field: string, rule: IntegerRule = {}): number {
+  const value = optionalInteger(body, field, rule);
+  if (value === null) {
+    throw invalid(field, `${labelOf(field, rule)} is required.`);
+  }
+  return value;
+}
+
 /** Reads a required member of a fixed vocabulary. */
 export function requireChoice<T extends string>(
   body: unknown,
