@@ -5,6 +5,7 @@ import { ArrowLeft, Flag, LoaderCircle, Milestone as MilestoneIcon, Pencil, Plus
 import { messageFor } from '../api/client';
 import { todayIsoDate } from '../api/date';
 import { PlantingCare } from '../components/PlantingCare';
+import { PlantingHarvests } from '../components/PlantingHarvests';
 import { PlantingIssues } from '../components/PlantingIssues';
 import {
   deleteMilestone,
@@ -378,6 +379,8 @@ export function PlantingDetailPage() {
       </section>
 
       <PlantingCare plantingId={planting.id} />
+
+      <PlantingHarvests plantingId={planting.id} />
 
       <PlantingIssues plantingId={planting.id} />
     </section>
