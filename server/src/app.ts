@@ -4,6 +4,7 @@ import { errorHandler, notFoundHandler } from './errors.js';
 import { requestLogger } from './logger.js';
 import { createAreasRouter } from './routes/areas.js';
 import { createHealthRouter } from './routes/health.js';
+import { createPlantingsRouter } from './routes/plantings.js';
 import { createSpeciesRouter } from './routes/species.js';
 
 /**
@@ -23,6 +24,7 @@ export function createApp(database: Database) {
   app.use('/api', createHealthRouter(database));
   app.use('/api', createSpeciesRouter(database));
   app.use('/api', createAreasRouter(database));
+  app.use('/api', createPlantingsRouter(database));
   app.use(notFoundHandler);
   app.use(errorHandler);
 
