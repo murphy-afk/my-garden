@@ -16,6 +16,12 @@ type IntegerRule = {
   label?: string;
 };
 
+type NumberRule = {
+  min?: number;
+  max?: number;
+  label?: string;
+};
+
 type ChoiceRule = {
   label?: string;
 };
@@ -101,6 +107,29 @@ export function requireInteger(body: unknown, field: string, rule: IntegerRule =
     throw invalidField(field, `${labelOf(field, rule)} is required.`);
   }
   return value;
+}
+
+/**
+ * Reads an optional decimal number inside [min, max]. Absent means "not set"
+ * (null). Amounts are stored as DECIMAL(8, 2), so the caller's range has to
+ * stay inside 999999.99 or MySQL refuses the write.
+ */
+export function optionalNumber(body: unknown, field: string, rule: NumberRule = {}): number | null {
+  const label = labelOf(field, rule);
+  const raw = valueOf(body, field);
+
+  if (raw === undefined || raw === null || raw === '') return null;
+  // A JSON body can carry 1e400, which parses to Infinity rather than failing.
+  if (typeof raw !== 'number' || !Number.isFinite(raw)) {
+    throw invalidField(field, `${label} must be a number.`);
+  }
+  if (rule.min !== undefined && raw < rule.min) {
+    throw invalidField(field, `${label} must be at least ${rule.min}.`);
+  }
+  if (rule.max !== undefined && raw > rule.max) {
+    throw invalidField(field, `${label} must be no more than ${rule.max}.`);
+  }
+  return raw;
 }
 
 /** Reads a required member of a fixed vocabulary. */
