@@ -1,6 +1,7 @@
 import { useRef, useState, type MouseEvent, type ReactNode } from 'react';
+import { Link } from 'react-router';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Archive, ArchiveRestore, LayoutGrid, LoaderCircle, Pencil, Plus, RefreshCw, Trash2 } from 'lucide-react';
+import { Archive, ArchiveRestore, LayoutGrid, LoaderCircle, Pencil, Plus, RefreshCw, Sprout, Trash2 } from 'lucide-react';
 import { messageFor } from '../api/client';
 import {
   archiveArea,
@@ -196,6 +197,13 @@ export function GardenPage() {
                       <td>col {area.gridX}, row {area.gridY}</td>
                       <td>
                         <div className="garden__actions">
+                          <Link
+                            className="button button--quiet button--icon"
+                            aria-label={`Plant in ${area.name}`}
+                            title="Plant here"
+                            to={`/plantings?new=1&areaId=${area.id}`}>
+                            <Sprout aria-hidden="true" size={16} />
+                          </Link>
                           <button
                             type="button"
                             className="button button--quiet button--icon"

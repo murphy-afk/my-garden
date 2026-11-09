@@ -13,6 +13,8 @@ import {
 } from 'lucide-react';
 import { PlaceholderPage } from './components/PlaceholderPage';
 import { GardenPage } from './pages/GardenPage';
+import { PlantingDetailPage } from './pages/PlantingDetailPage';
+import { PlantingsPage } from './pages/PlantingsPage';
 import { SpeciesPage } from './pages/SpeciesPage';
 
 type NavItem = {
@@ -42,8 +44,8 @@ const navItems: NavItem[] = [
     path: '/plantings',
     label: 'Plantings',
     description: 'What was planted, where and when, and the full history of each plant.',
-    session: 'S06',
     icon: Sprout,
+    element: <PlantingsPage />,
   },
   {
     path: '/species',
@@ -131,6 +133,8 @@ export function App() {
             {navItems.map((item) => (
               <Route key={item.path} path={item.path} element={sectionElement(item)} />
             ))}
+            {/* One level under a section, so a record can be opened on its own. */}
+            <Route path="/plantings/:id" element={<PlantingDetailPage />} />
           </Routes>
         </main>
       </div>
