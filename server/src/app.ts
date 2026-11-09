@@ -3,6 +3,7 @@ import type { Database } from './db/pool.js';
 import { errorHandler, notFoundHandler } from './errors.js';
 import { requestLogger } from './logger.js';
 import { createAreasRouter } from './routes/areas.js';
+import { createCareLogsRouter } from './routes/careLogs.js';
 import { createHealthRouter } from './routes/health.js';
 import { createMilestonesRouter } from './routes/milestones.js';
 import { createPlantingsRouter } from './routes/plantings.js';
@@ -27,6 +28,7 @@ export function createApp(database: Database) {
   app.use('/api', createAreasRouter(database));
   app.use('/api', createPlantingsRouter(database));
   app.use('/api', createMilestonesRouter(database));
+  app.use('/api', createCareLogsRouter(database));
   app.use(notFoundHandler);
   app.use(errorHandler);
 
