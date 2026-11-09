@@ -13,9 +13,11 @@ import {
 } from 'lucide-react';
 import { PlaceholderPage } from './components/PlaceholderPage';
 import { GardenPage } from './pages/GardenPage';
+import { HarvestsPage } from './pages/HarvestsPage';
 import { IssuesPage } from './pages/IssuesPage';
 import { PlantingDetailPage } from './pages/PlantingDetailPage';
 import { PlantingsPage } from './pages/PlantingsPage';
+import { SeedsPage } from './pages/SeedsPage';
 import { SpeciesPage } from './pages/SpeciesPage';
 
 type NavItem = {
@@ -66,15 +68,15 @@ const navItems: NavItem[] = [
     path: '/harvests',
     label: 'Harvests',
     description: 'What was picked, how much and when.',
-    session: 'S10',
     icon: Wheat,
+    element: <HarvestsPage />,
   },
   {
     path: '/seeds',
     label: 'Seeds',
     description: 'Seeds kept after harvest, with quantity and storage details.',
-    session: 'S10',
     icon: Package,
+    element: <SeedsPage />,
   },
   {
     path: '/statistics',
