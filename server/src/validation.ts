@@ -24,8 +24,12 @@ function labelOf(field: string, rule: { label?: string }): string {
   return rule.label ?? field;
 }
 
-/** The 400 every reader throws; `details.fields` names the field so a form can show the message in place. */
-function invalid(field: string, message: string): ApiError {
+/**
+ * The 400 every reader throws; `details.fields` names the field so a form can
+ * show the message in place. Exported so a route can report a rule that spans
+ * two fields, such as an end date that falls before the planting date.
+ */
+export function invalidField(field: string, message: string): ApiError {
   return new ApiError(400, 'validation_failed', message, { fields: { [field]: message } });
 }
 
@@ -51,7 +55,7 @@ export function readBody(body: unknown): Record<string, unknown> {
 export function requireText(body: unknown, field: string, rule: TextRule = {}): string {
   const value = optionalText(body, field, rule);
   if (value === null) {
-    throw invalid(field, `${labelOf(field, rule)} is required.`);
+    throw invalidField(field, `${labelOf(field, rule)} is required.`);
   }
   return value;
 }
@@ -62,12 +66,12 @@ export function optionalText(body: unknown, field: string, rule: TextRule = {}):
   const raw = valueOf(body, field);
 
   if (raw === undefined || raw === null) return null;
-  if (typeof raw !== 'string') throw invalid(field, `${label} must be text.`);
+  if (typeof raw !== 'string') throw invalidField(field, `${label} must be text.`);
 
   const value = raw.trim();
   if (value === '') return null;
   if (rule.maxLength !== undefined && value.length > rule.maxLength) {
-    throw invalid(field, `${label} must be at most ${rule.maxLength} characters.`);
+    throw invalidField(field, `${label} must be at most ${rule.maxLength} characters.`);
   }
   return value;
 }
@@ -79,13 +83,13 @@ export function optionalInteger(body: unknown, field: string, rule: IntegerRule 
 
   if (raw === undefined || raw === null || raw === '') return null;
   if (typeof raw !== 'number' || !Number.isInteger(raw)) {
-    throw invalid(field, `${label} must be a whole number.`);
+    throw invalidField(field, `${label} must be a whole number.`);
   }
   if (rule.min !== undefined && raw < rule.min) {
-    throw invalid(field, `${label} must be at least ${rule.min}.`);
+    throw invalidField(field, `${label} must be at least ${rule.min}.`);
   }
   if (rule.max !== undefined && raw > rule.max) {
-    throw invalid(field, `${label} must be no more than ${rule.max}.`);
+    throw invalidField(field, `${label} must be no more than ${rule.max}.`);
   }
   return raw;
 }
@@ -94,7 +98,7 @@ export function optionalInteger(body: unknown, field: string, rule: IntegerRule 
 export function requireInteger(body: unknown, field: string, rule: IntegerRule = {}): number {
   const value = optionalInteger(body, field, rule);
   if (value === null) {
-    throw invalid(field, `${labelOf(field, rule)} is required.`);
+    throw invalidField(field, `${labelOf(field, rule)} is required.`);
   }
   return value;
 }
@@ -110,11 +114,11 @@ export function requireChoice<T extends string>(
   const raw = valueOf(body, field);
 
   if (raw === undefined || raw === null || raw === '') {
-    throw invalid(field, `${label} is required.`);
+    throw invalidField(field, `${label} is required.`);
   }
   const match = typeof raw === 'string' ? allowed.find((option) => option === raw) : undefined;
   if (match === undefined) {
-    throw invalid(field, `${label} must be one of ${allowed.join(', ')}.`);
+    throw invalidField(field, `${label} must be one of ${allowed.join(', ')}.`);
   }
   return match;
 }
@@ -126,4 +130,49 @@ export function requireId(raw: string | undefined): number {
     throw new ApiError(400, 'invalid_id', 'The id must be a positive whole number.');
   }
   return id;
+}
+
+/**
+ * Business dates travel as 'YYYY-MM-DD' text, the same form MySQL stores them
+ * in, so a date never carries a time or a timezone offset.
+ */
+const datePattern = /^(\d{4})-(\d{2})-(\d{2})$/;
+
+/** Reads a required calendar date as 'YYYY-MM-DD'. */
+export function requireDate(body: unknown, field: string, rule: ChoiceRule = {}): string {
+  const value = optionalDate(body, field, rule);
+  if (value === null) {
+    throw invalidField(field, `${labelOf(field, rule)} is required.`);
+  }
+  return value;
+}
+
+/** Reads an optional calendar date. Absent or blank means "not set" (null). */
+export function optionalDate(body: unknown, field: string, rule: ChoiceRule = {}): string | null {
+  const label = labelOf(field, rule);
+  const raw = valueOf(body, field);
+
+  if (raw === undefined || raw === null || raw === '') return null;
+  if (typeof raw !== 'string') throw invalidField(field, `${label} must be a date.`);
+
+  const value = raw.trim();
+  const parts = datePattern.exec(value);
+  if (parts === null) {
+    throw invalidField(field, `${label} must be a date in the form YYYY-MM-DD.`);
+  }
+
+  // Round trip through a real calendar date, which rejects 2026-02-30 while
+  // keeping 2026-02-28. Date.UTC anchors the check so daylight saving cannot
+  // shift the result.
+  const year = Number(parts[1]);
+  const month = Number(parts[2]);
+  const day = Number(parts[3]);
+  const parsed = new Date(Date.UTC(year, month - 1, day));
+  const isRealDay =
+    parsed.getUTCFullYear() === year && parsed.getUTCMonth() === month - 1 && parsed.getUTCDate() === day;
+  if (!isRealDay) {
+    throw invalidField(field, `${label} must be a real calendar date.`);
+  }
+
+  return value;
 }

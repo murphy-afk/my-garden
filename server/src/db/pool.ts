@@ -35,6 +35,9 @@ export function createDatabase(config: DatabaseConfig): Database {
     database: config.database,
     waitForConnections: true,
     connectionLimit,
+    // Business dates are stored as DATE and read back as 'YYYY-MM-DD' text, so
+    // a planting date never passes through a Date object and its timezone.
+    dateStrings: true,
   });
 
   async function query<T>(sql: string, parameters: QueryParameters = []): Promise<T> {
