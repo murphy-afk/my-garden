@@ -1,0 +1,159 @@
+/*
+ * Issues section: the page header and status filter, and the issue rows,
+ * which the issues page and a planting's own page both show.
+ */
+
+.issues__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+  flex-wrap: wrap;
+}
+
+.issues__intro {
+  margin: 0;
+  max-width: 40rem;
+  color: var(--color-text-muted);
+}
+
+.issues__filters {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.issues__filter {
+  min-width: 13rem;
+}
+
+.issues__count {
+  margin: 0 0 var(--space-2) auto;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.issue__list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.issue__entry {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.issue__entry:first-child {
+  padding-top: 0;
+}
+
+.issue__entry:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.issue__entry-main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.issue__line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2) var(--space-3);
+  margin: 0;
+}
+
+.issue__title {
+  font-weight: var(--weight-semibold);
+}
+
+.issue__kind {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.issue__meta {
+  margin: 0;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.issue__planting {
+  margin: 0;
+  font-size: var(--text-sm);
+}
+
+.issue__description {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  white-space: pre-wrap;
+}
+
+.issue__resolution {
+  margin: 0;
+  padding-left: var(--space-3);
+  border-left: 2px solid var(--color-accent);
+  font-size: var(--text-sm);
+  white-space: pre-wrap;
+}
+
+.issue__actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+/* Severity says how bad it is; status says where it has got to. */
+
+.issue__badge,
+.issue__severity {
+  display: inline-block;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+}
+
+.issue__severity--low {
+  background: var(--color-surface-muted);
+  color: var(--color-text-muted);
+}
+
+.issue__severity--medium {
+  background: var(--color-warning-soft);
+  color: var(--color-warning);
+}
+
+.issue__severity--high {
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
+}
+
+.issue__badge--open {
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
+}
+
+.issue__badge--monitoring {
+  background: var(--color-warning-soft);
+  color: var(--color-warning);
+}
+
+.issue__badge--resolved {
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
