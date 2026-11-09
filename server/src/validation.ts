@@ -132,6 +132,15 @@ export function optionalNumber(body: unknown, field: string, rule: NumberRule = 
   return raw;
 }
 
+/** Reads a required decimal number inside [min, max]. */
+export function requireNumber(body: unknown, field: string, rule: NumberRule = {}): number {
+  const value = optionalNumber(body, field, rule);
+  if (value === null) {
+    throw invalidField(field, `${labelOf(field, rule)} is required.`);
+  }
+  return value;
+}
+
 /** Reads a required member of a fixed vocabulary. */
 export function requireChoice<T extends string>(
   body: unknown,
@@ -150,6 +159,20 @@ export function requireChoice<T extends string>(
     throw invalidField(field, `${label} must be one of ${allowed.join(', ')}.`);
   }
   return match;
+}
+
+/** Reads a required true or false, the shape a checkbox is sent in. */
+export function requireBoolean(body: unknown, field: string, rule: ChoiceRule = {}): boolean {
+  const label = labelOf(field, rule);
+  const raw = valueOf(body, field);
+
+  if (raw === undefined || raw === null) {
+    throw invalidField(field, `${label} is required.`);
+  }
+  if (typeof raw !== 'boolean') {
+    throw invalidField(field, `${label} must be true or false.`);
+  }
+  return raw;
 }
 
 /** Reads a `:id` path parameter as a positive whole number. */
