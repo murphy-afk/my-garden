@@ -1,0 +1,253 @@
+/*
+ * Garden section: header, layout canvas and the area list.
+ * The layout canvas draws one pixel per 1.6 centimetres, so a slot is
+ * 150 x 75 pixels; those numbers live in client/src/api/areas.ts and only
+ * the appearance lives here.
+ */
+
+.garden__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+  flex-wrap: wrap;
+}
+
+.garden__intro {
+  margin: 0;
+  max-width: 40rem;
+  color: var(--color-text-muted);
+}
+
+.garden__layout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+
+.garden__hint {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.garden__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.garden__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.garden__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.garden__count {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+/*
+ * Layout canvas.
+ * The frame scrolls sideways on narrow screens so the grid keeps its size
+ * and the areas stay where they were placed.
+ */
+
+.layout__frame {
+  overflow-x: auto;
+  padding: var(--space-1);
+}
+
+.layout__canvas {
+  position: relative;
+  background-color: var(--color-surface-muted);
+  background-image:
+    linear-gradient(to right, var(--color-border) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--color-border) 1px, transparent 1px);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+}
+
+.layout__empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.layout__area {
+  position: absolute;
+}
+
+.layout__area-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  width: 100%;
+  height: 100%;
+  padding: var(--space-1) var(--space-2);
+  overflow: hidden;
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-sm);
+  background: var(--color-accent-soft);
+  color: var(--color-text);
+  font-size: var(--text-xs);
+  line-height: var(--leading-tight);
+  text-align: left;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.layout__area-body:active {
+  cursor: grabbing;
+}
+
+.layout__area-name {
+  overflow: hidden;
+  font-weight: var(--weight-semibold);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.layout__area-size {
+  overflow: hidden;
+  color: var(--color-text-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.layout__area--dragging {
+  z-index: 2;
+}
+
+.layout__area--dragging .layout__area-body {
+  box-shadow: var(--shadow-md);
+  opacity: 0.9;
+}
+
+.layout__area-resize {
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-5);
+  height: var(--space-5);
+  padding: 0;
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-sm) 0 var(--radius-sm) 0;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  cursor: nwse-resize;
+  touch-action: none;
+}
+
+.layout__area-resize:hover {
+  color: var(--color-text);
+}
+
+/*
+ * Area list.
+ */
+
+.garden__table-wrap {
+  overflow-x: auto;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.garden__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+
+.garden__table th,
+.garden__table td {
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.garden__table th {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-muted);
+  background: var(--color-surface-muted);
+}
+
+.garden__table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.garden__row--archived td {
+  color: var(--color-text-muted);
+}
+
+.garden__identity {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.garden__name-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+}
+
+.garden__name {
+  font-weight: var(--weight-semibold);
+}
+
+.garden__badge {
+  display: inline-block;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-full);
+  background: var(--color-surface-muted);
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+}
+
+.garden__notes {
+  display: block;
+  margin: 0;
+  max-width: 22rem;
+  overflow: hidden;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.garden__actions {
+  display: flex;
+  gap: var(--space-2);
+  justify-content: flex-end;
+}

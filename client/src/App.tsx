@@ -12,6 +12,7 @@ import {
   Wheat,
 } from 'lucide-react';
 import { PlaceholderPage } from './components/PlaceholderPage';
+import { GardenPage } from './pages/GardenPage';
 import { SpeciesPage } from './pages/SpeciesPage';
 
 type NavItem = {
@@ -34,8 +35,8 @@ const navItems: NavItem[] = [
     path: '/garden',
     label: 'Garden',
     description: 'The layout of the plot: beds, pots and borders, and where each planting sits.',
-    session: 'S05',
     icon: LayoutGrid,
+    element: <GardenPage />,
   },
   {
     path: '/plantings',
