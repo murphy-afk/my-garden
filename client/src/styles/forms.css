@@ -145,6 +145,22 @@
   color: var(--color-text-muted);
 }
 
+/* A label that wraps its checkbox, so the text is part of the control. */
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+}
+
+.checkbox input {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--color-accent);
+}
+
 /* The error element is always in the DOM so aria-describedby can point at it;
    it only appears once the API or the browser has something to say. */
 .field__error:empty {
