@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ArrowLeft, Flag, LoaderCircle, Milestone as MilestoneIcon, Pencil, Plus, RefreshCw, RotateCcw, Trash2 } from 'lucide-react';
 import { messageFor } from '../api/client';
 import { todayIsoDate } from '../api/date';
+import { PlantingCare } from '../components/PlantingCare';
 import {
   deleteMilestone,
   listMilestones,
@@ -374,6 +375,8 @@ export function PlantingDetailPage() {
           </ol>
         )}
       </section>
+
+      <PlantingCare plantingId={planting.id} />
     </section>
   );
 }

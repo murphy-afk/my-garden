@@ -304,3 +304,94 @@
   gap: var(--space-2);
   margin-left: auto;
 }
+
+/* Care: the summary line, the quick add buttons and the log itself.
+   The section itself uses the planting__section styles shared with the
+   timeline, so only what is specific to care lives here. */
+
+.care__summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-5);
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.care__summary-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.care__quick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.care__list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.care__entry {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.care__entry:first-child {
+  padding-top: 0;
+}
+
+.care__entry:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.care__entry-main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.care__entry-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.care__kind {
+  font-weight: var(--weight-semibold);
+}
+
+.care__date,
+.care__amount {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.care__note {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  white-space: pre-wrap;
+}
+
+.care__actions {
+  display: flex;
+  gap: var(--space-2);
+}
