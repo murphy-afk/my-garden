@@ -5,9 +5,11 @@ import { requestLogger } from './logger.js';
 import { createAreasRouter } from './routes/areas.js';
 import { createCareLogsRouter } from './routes/careLogs.js';
 import { createHealthRouter } from './routes/health.js';
+import { createHarvestsRouter } from './routes/harvests.js';
 import { createIssuesRouter } from './routes/issues.js';
 import { createMilestonesRouter } from './routes/milestones.js';
 import { createPlantingsRouter } from './routes/plantings.js';
+import { createSeedSavesRouter } from './routes/seedSaves.js';
 import { createSpeciesRouter } from './routes/species.js';
 
 /**
@@ -31,6 +33,8 @@ export function createApp(database: Database) {
   app.use('/api', createMilestonesRouter(database));
   app.use('/api', createCareLogsRouter(database));
   app.use('/api', createIssuesRouter(database));
+  app.use('/api', createHarvestsRouter(database));
+  app.use('/api', createSeedSavesRouter(database));
   app.use(notFoundHandler);
   app.use(errorHandler);
 
