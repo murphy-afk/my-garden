@@ -1,5 +1,5 @@
 import { useRef, useState, type CSSProperties, type KeyboardEvent, type MouseEvent, type PointerEvent } from 'react';
-import { MoveDiagonal2 } from 'lucide-react';
+import { Bug, MoveDiagonal2 } from 'lucide-react';
 import { areaGrid, areaGridHeightCm, areaGridWidthCm, type AreaGeometry, type GardenArea } from '../api/areas';
 
 /** How far the pointer must travel before a press counts as a drag, not a click. */
@@ -24,6 +24,8 @@ type DragState = {
 type LayoutCanvasProps = {
   /** The areas to draw, active only: archived areas leave the layout. */
   areas: GardenArea[];
+  /** Open issue counts by area id, so a problem shows on the bed it is in. */
+  openIssues: Record<number, number>;
   /** Saves a moved or resized area; the page owns the API call. */
   onSave: (area: GardenArea, geometry: AreaGeometry) => void;
   /** Opens the edit form, with the element that should get focus back. */
@@ -90,7 +92,7 @@ const arrowSteps: Record<string, readonly [number, number]> = {
   ArrowDown: [0, 1],
 };
 
-export function LayoutCanvas({ areas, onSave, onEdit }: LayoutCanvasProps) {
+export function LayoutCanvas({ areas, openIssues, onSave, onEdit }: LayoutCanvasProps) {
   const [drag, setDrag] = useState<DragState | null>(null);
   // Set when a drag ends, so the click the browser fires next does not open the form.
   const suppressClickRef = useRef(false);
@@ -223,6 +225,11 @@ export function LayoutCanvas({ areas, onSave, onEdit }: LayoutCanvasProps) {
         {areas.map((area) => {
           const geometry = geometryOf(area);
           const dragging = drag !== null && drag.areaId === area.id;
+          const issueCount = openIssues[area.id] ?? 0;
+          const issueNote =
+            issueCount > 0
+              ? ` ${issueCount} open ${issueCount === 1 ? 'issue' : 'issues'}.`
+              : '';
           const style: CSSProperties = {
             left: geometry.gridX * cellWidthPx,
             top: geometry.gridY * cellHeightPx,
@@ -235,7 +242,7 @@ export function LayoutCanvas({ areas, onSave, onEdit }: LayoutCanvasProps) {
               <button
                 type="button"
                 className="layout__area-body"
-                aria-label={`Edit ${area.name}, ${area.widthCm} by ${area.depthCm} centimetres at column ${area.gridX}, row ${area.gridY}. Arrow keys move it, shift with arrow keys resizes it.`}
+                aria-label={`Edit ${area.name}, ${area.widthCm} by ${area.depthCm} centimetres at column ${area.gridX}, row ${area.gridY}.${issueNote} Arrow keys move it, shift with arrow keys resizes it.`}
                 onPointerDown={(event) => beginDrag(event, area, 'move')}
                 onPointerMove={handlePointerMove}
                 onPointerUp={handlePointerUp}
@@ -244,6 +251,12 @@ export function LayoutCanvas({ areas, onSave, onEdit }: LayoutCanvasProps) {
                 onKeyDown={(event) => handleBodyKeyDown(event, area)}>
                 <span className="layout__area-name">{area.name}</span>
                 <span className="layout__area-size">{area.widthCm} x {area.depthCm} cm</span>
+                {issueCount > 0 && (
+                  <span className="layout__issue">
+                    <Bug aria-hidden="true" size={12} />
+                    <span className="layout__issue-count">{issueCount}</span>
+                  </span>
+                )}
               </button>
               <button
                 type="button"

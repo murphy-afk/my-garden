@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Archive, ArchiveRestore, LayoutGrid, LoaderCircle, Pencil, Plus, RefreshCw, Sprout, Trash2 } from 'lucide-react';
 import { messageFor } from '../api/client';
+import { issueKeys, listIssues, openIssueCounts } from '../api/issues';
 import {
   archiveArea,
   areaKeys,
@@ -32,6 +33,14 @@ export function GardenPage() {
   // Both variants are always loaded so the archived toggle can never hide the
   // list, and the empty state stays accurate when everything is archived.
   const query = useQuery({ queryKey: areaKeys.all, queryFn: () => listAreas(true) });
+
+  // The layout flags the areas where something is wrong, so the open issues
+  // are loaded beside the areas rather than per area.
+  const openIssuesQuery = useQuery({
+    queryKey: [...issueKeys.all, { status: 'open' }],
+    queryFn: () => listIssues({ status: 'open' }),
+  });
+  const openIssues = openIssueCounts(openIssuesQuery.data ?? []);
 
   const archive = useMutation({
     mutationFn: ({ id, archived }: { id: number; archived: boolean }) =>
@@ -137,11 +146,14 @@ export function GardenPage() {
     content = (
       <>
         <div className="garden__layout">
+          {openIssuesQuery.isError && (
+            <p className="alert" role="alert">{messageFor(openIssuesQuery.error)}</p>
+          )}
           <p className="garden__hint">
             Drag an area to move it, drag its corner handle to resize it, or click it to edit. With an
             area focused, arrow keys move it and shift with arrow keys resizes it.
           </p>
-          <LayoutCanvas areas={active} onSave={handleSave} onEdit={openEdit} />
+          <LayoutCanvas areas={active} openIssues={openIssues} onSave={handleSave} onEdit={openEdit} />
         </div>
 
         <div className="garden__list">
