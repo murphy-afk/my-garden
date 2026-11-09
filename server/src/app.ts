@@ -5,6 +5,7 @@ import { requestLogger } from './logger.js';
 import { createAreasRouter } from './routes/areas.js';
 import { createCareLogsRouter } from './routes/careLogs.js';
 import { createHealthRouter } from './routes/health.js';
+import { createIssuesRouter } from './routes/issues.js';
 import { createMilestonesRouter } from './routes/milestones.js';
 import { createPlantingsRouter } from './routes/plantings.js';
 import { createSpeciesRouter } from './routes/species.js';
@@ -29,6 +30,7 @@ export function createApp(database: Database) {
   app.use('/api', createPlantingsRouter(database));
   app.use('/api', createMilestonesRouter(database));
   app.use('/api', createCareLogsRouter(database));
+  app.use('/api', createIssuesRouter(database));
   app.use(notFoundHandler);
   app.use(errorHandler);
 
