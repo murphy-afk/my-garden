@@ -19,6 +19,7 @@ import { PlantingDetailPage } from './pages/PlantingDetailPage';
 import { PlantingsPage } from './pages/PlantingsPage';
 import { SeedsPage } from './pages/SeedsPage';
 import { SpeciesPage } from './pages/SpeciesPage';
+import { StatsPage } from './pages/StatsPage';
 
 type NavItem = {
   path: string;
@@ -82,8 +83,8 @@ const navItems: NavItem[] = [
     path: '/statistics',
     label: 'Statistics',
     description: 'How the plants are performing: yield, timing, care frequency and survival.',
-    session: 'S11',
     icon: ChartColumn,
+    element: <StatsPage />,
   },
   {
     path: '/guides',
