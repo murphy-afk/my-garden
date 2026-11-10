@@ -175,6 +175,51 @@ export function requireBoolean(body: unknown, field: string, rule: ChoiceRule = 
   return raw;
 }
 
+type TextListRule = {
+  /** Counted after blanks are dropped, so an empty box at the end is free. */
+  maxItems?: number;
+  maxLength?: number;
+  label?: string;
+};
+
+/**
+ * Reads an optional list of short text values: each entry is trimmed, blanks
+ * are dropped, and a repeat that differs only in case is dropped too, because
+ * tags are unique in the database whatever their capital.
+ */
+export function optionalTextList(body: unknown, field: string, rule: TextListRule = {}): string[] {
+  const label = labelOf(field, rule);
+  const raw = valueOf(body, field);
+
+  if (raw === undefined || raw === null) return [];
+  if (!Array.isArray(raw)) throw invalidField(field, `${label} must be a list.`);
+
+  const values: string[] = [];
+  const seen = new Set<string>();
+
+  for (const entry of raw) {
+    if (typeof entry !== 'string') throw invalidField(field, `Every ${label.toLowerCase()} must be text.`);
+
+    const value = entry.trim();
+    if (value === '') continue;
+
+    const key = value.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+
+    if (rule.maxLength !== undefined && value.length > rule.maxLength) {
+      throw invalidField(field, `${label} entries must be at most ${rule.maxLength} characters.`);
+    }
+    values.push(value);
+  }
+
+  if (rule.maxItems !== undefined && values.length > rule.maxItems) {
+    throw invalidField(field, `${label} must have at most ${rule.maxItems} entries.`);
+  }
+
+  return values;
+}
+
 /** Reads a `:id` path parameter as a positive whole number. */
 export function requireId(raw: string | undefined): number {
   const id = Number(raw);
