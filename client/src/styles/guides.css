@@ -1,0 +1,246 @@
+/*
+ * Guides section: the library list with its filters, the admin form's long
+ * text area, and the reader.
+ */
+
+.guides__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+  flex-wrap: wrap;
+}
+
+.guides__intro {
+  margin: 0;
+  max-width: 40rem;
+  color: var(--color-text-muted);
+}
+
+.guides__filters {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.guides__filter {
+  min-width: 13rem;
+}
+
+.guides__count {
+  margin: 0 0 var(--space-2) auto;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.guides__list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.guides__entry {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.guides__entry:first-child {
+  padding-top: 0;
+}
+
+.guides__entry:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.guides__entry-main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.guides__line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.guides__title {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  text-decoration: none;
+}
+
+.guides__title:hover {
+  text-decoration: underline;
+}
+
+.guides__category {
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-full);
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+}
+
+.guides__summary {
+  margin: 0;
+  max-width: 48rem;
+  color: var(--color-text-muted);
+}
+
+.guides__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+}
+
+/* A tag is a button here: pressing it filters the shelf down to its guides. */
+.guides__tag {
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+  cursor: pointer;
+}
+
+.guides__tag:hover {
+  background: var(--color-surface-muted);
+  color: var(--color-text);
+}
+
+.guides__source {
+  margin: 0;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.guides__actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+/* The admin form holds a whole article, so its text area gets some height. */
+
+.guide-form__body {
+  min-height: 18rem;
+}
+
+/* The reader */
+
+.guide-reader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  max-width: 46rem;
+}
+
+.guide-reader__back {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  text-decoration: none;
+}
+
+.guide-reader__back:hover {
+  text-decoration: underline;
+}
+
+.guide-reader__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.guide-reader__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin: 0;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.guide-reader__category {
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-full);
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  font-weight: var(--weight-medium);
+}
+
+.guide-reader__summary {
+  margin: 0;
+  font-size: var(--text-lg);
+  color: var(--color-text-muted);
+}
+
+.guide-reader__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+}
+
+.guide-reader__tag {
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-full);
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+}
+
+.guide-reader__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+/* Single newlines inside a paragraph are kept, blank ones start a new one. */
+.guide-reader__paragraph {
+  margin: 0;
+  line-height: var(--leading-normal);
+  white-space: pre-wrap;
+}
+
+.guide-reader__source {
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+
+.guide-reader__source-label {
+  margin: 0;
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.guide-reader__source-value {
+  margin: 0;
+  font-size: var(--text-sm);
+}

@@ -13,6 +13,8 @@ import {
 } from 'lucide-react';
 import { PlaceholderPage } from './components/PlaceholderPage';
 import { GardenPage } from './pages/GardenPage';
+import { GuideReaderPage } from './pages/GuideReaderPage';
+import { GuidesPage } from './pages/GuidesPage';
 import { HarvestsPage } from './pages/HarvestsPage';
 import { IssuesPage } from './pages/IssuesPage';
 import { PlantingDetailPage } from './pages/PlantingDetailPage';
@@ -90,8 +92,8 @@ const navItems: NavItem[] = [
     path: '/guides',
     label: 'Guides',
     description: 'Gardening guides, tips and tricks collected from around the web.',
-    session: 'S12',
     icon: BookOpen,
+    element: <GuidesPage />,
   },
 ];
 
@@ -139,6 +141,7 @@ export function App() {
             ))}
             {/* One level under a section, so a record can be opened on its own. */}
             <Route path="/plantings/:id" element={<PlantingDetailPage />} />
+            <Route path="/guides/:id" element={<GuideReaderPage />} />
           </Routes>
         </main>
       </div>
