@@ -11,6 +11,7 @@ import { createMilestonesRouter } from './routes/milestones.js';
 import { createPlantingsRouter } from './routes/plantings.js';
 import { createSeedSavesRouter } from './routes/seedSaves.js';
 import { createSpeciesRouter } from './routes/species.js';
+import { createStatsRouter } from './routes/stats.js';
 
 /**
  * Builds the express application without listening, so the same wiring is used
@@ -35,6 +36,7 @@ export function createApp(database: Database) {
   app.use('/api', createIssuesRouter(database));
   app.use('/api', createHarvestsRouter(database));
   app.use('/api', createSeedSavesRouter(database));
+  app.use('/api', createStatsRouter(database));
   app.use(notFoundHandler);
   app.use(errorHandler);
 
