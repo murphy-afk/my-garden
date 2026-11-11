@@ -39,6 +39,42 @@
   gap: var(--space-4);
 }
 
+/* First run: what the app needs before anything else can be recorded. */
+
+.garden__steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0;
+  padding-left: var(--space-5);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  text-align: left;
+}
+
+/* The step offered once the very first area exists. */
+
+.garden__next {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin: 0 0 var(--space-5);
+  padding: var(--space-4);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-lg);
+  background: var(--color-accent-soft);
+  font-size: var(--text-sm);
+  flex-wrap: wrap;
+}
+
+.garden__next-icon {
+  color: var(--color-accent);
+}
+
+.garden__next-link {
+  margin-left: auto;
+}
+
 .garden__toolbar {
   display: flex;
   align-items: center;

@@ -19,6 +19,8 @@ export type FormTarget = { mode: 'create'; geometry: AreaGeometry } | { mode: 'e
 type AreaFormProps = {
   target: FormTarget;
   onClose: () => void;
+  /** Hands the saved area back, so a first run can offer the next step. */
+  onCreated?: ((area: GardenArea) => void) | undefined;
 };
 
 /** Every control holds a string; counts are converted on the way out. */
@@ -69,15 +71,16 @@ function readText(raw: string): string | null {
   return trimmed === '' ? null : trimmed;
 }
 
-export function AreaForm({ target, onClose }: AreaFormProps) {
+export function AreaForm({ target, onClose, onCreated }: AreaFormProps) {
   const [values, setValues] = useState<FormValues>(() => initialValues(target));
   const queryClient = useQueryClient();
 
   const save = useMutation({
     mutationFn: (input: AreaInput) =>
       target.mode === 'create' ? createArea(input) : updateArea(target.area.id, input),
-    onSuccess: () => {
+    onSuccess: (area) => {
       queryClient.invalidateQueries({ queryKey: areaKeys.all });
+      onCreated?.(area);
       onClose();
     },
   });

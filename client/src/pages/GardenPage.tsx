@@ -26,6 +26,8 @@ const defaultSize = { widthCm: 120, depthCm: 60 };
 export function GardenPage() {
   const [includeArchived, setIncludeArchived] = useState(false);
   const [formTarget, setFormTarget] = useState<FormTarget | null>(null);
+  // Set when the very first area is made, so the page can offer what comes next.
+  const [firstArea, setFirstArea] = useState<GardenArea | null>(null);
   const addButtonRef = useRef<HTMLButtonElement>(null);
   const triggerRef = useRef<HTMLElement | null>(null);
   const queryClient = useQueryClient();
@@ -93,6 +95,14 @@ export function GardenPage() {
     saveGeometry.mutate({ area, geometry });
   }
 
+  /**
+   * The step after the first area exists. Only the first one counts: later
+   * areas are added by someone who already knows the way round.
+   */
+  function handleCreated(area: GardenArea): void {
+    if (all.length === 0) setFirstArea(area);
+  }
+
   function openCreate(event: MouseEvent<HTMLButtonElement>): void {
     triggerRef.current = event.currentTarget;
     const geometry = firstFreeSlot(active, defaultSize.widthCm, defaultSize.depthCm);
@@ -135,10 +145,18 @@ export function GardenPage() {
     content = (
       <div className="state">
         <LayoutGrid className="state__icon" aria-hidden="true" size={32} />
-        <h2 className="state__title">No areas yet</h2>
-        <p className="state__text">Add the first area to start laying out the garden.</p>
+        <h2 className="state__title">Start your garden</h2>
+        <p className="state__text">
+          Everything else in the app hangs off an area: a bed, a pot or a border. Add the first one
+          and you can plant into it straight away.
+        </p>
+        <ol className="garden__steps">
+          <li>Add this area, with a name and a size.</li>
+          <li>Plant a species into it from the row that appears below.</li>
+          <li>Record care, harvests, issues and seeds as the season goes.</li>
+        </ol>
         <button type="button" className="button" onClick={openCreate}>
-          <Plus aria-hidden="true" size={16} /> Add area
+          <Plus aria-hidden="true" size={16} /> Add the first area
         </button>
       </div>
     );
@@ -284,10 +302,24 @@ export function GardenPage() {
         </button>
       </header>
 
+      {firstArea !== null && all.some((area) => area.id === firstArea.id) && (
+        <p className="garden__next" role="status">
+          <Sprout className="garden__next-icon" aria-hidden="true" size={16} />
+          <span>
+            First area added. Plant something in <strong>{firstArea.name}</strong> and the record
+            starts.
+          </span>
+          <Link className="button button--secondary garden__next-link" to={`/plantings?new=1&areaId=${firstArea.id}`}>
+            Plant in {firstArea.name}
+          </Link>
+        </p>
+      )}
+
       {formTarget !== null && (
         <AreaForm
           key={formTarget.mode === 'edit' ? formTarget.area.id : 'create'}
           target={formTarget}
+          onCreated={handleCreated}
           onClose={closeForm} />
       )}
 
