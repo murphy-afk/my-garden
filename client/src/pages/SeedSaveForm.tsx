@@ -132,6 +132,7 @@ export function SeedSaveForm({ target, onClose }: SeedSaveFormProps) {
               id="seed-kept"
               type="checkbox"
               checked={values.kept}
+              aria-describedby="seed-kept-hint"
               onChange={(event) => change({ kept: event.target.checked })} />
             Seeds were kept from this harvest
           </label>
