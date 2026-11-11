@@ -183,6 +183,15 @@
   color: var(--color-text);
 }
 
+/* On a touch screen the corner handle has to be findable with a thumb, so it
+   grows beyond the 20 pixels a mouse is happy with. */
+@media (pointer: coarse) {
+  .layout__area-resize {
+    width: var(--space-7);
+    height: var(--space-7);
+  }
+}
+
 /*
  * Area list.
  */
