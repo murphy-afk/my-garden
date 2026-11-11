@@ -201,6 +201,12 @@ export function PlantingsPage() {
           onClose={closeForm} />
       )}
 
+      {(areasQuery.isError || speciesQuery.isError) && (
+        <p className="alert" role="alert">
+          The filter menus could not be loaded: {messageFor(areasQuery.error ?? speciesQuery.error)}
+        </p>
+      )}
+
       {(hasFilters || all.length > 0) && (
         <div className="plantings__filters">
           <div className="field plantings__filter">

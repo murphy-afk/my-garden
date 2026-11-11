@@ -106,6 +106,12 @@ export function HarvestsPage() {
         </div>
       </header>
 
+      {areasQuery.isError && (
+        <p className="alert" role="alert">
+          The area filter could not be loaded: {messageFor(areasQuery.error)}
+        </p>
+      )}
+
       {(hasFilters || harvests.length > 0) && (
         <div className="harvests__filters">
           <div className="field harvests__filter">

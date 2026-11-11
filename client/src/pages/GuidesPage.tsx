@@ -198,6 +198,12 @@ export function GuidesPage() {
 
       {formTarget !== null && <GuideForm target={formTarget} onClose={closeForm} />}
 
+      {tagSourceQuery.isError && (
+        <p className="alert" role="alert">
+          The tag filter could not be loaded: {messageFor(tagSourceQuery.error)}
+        </p>
+      )}
+
       {(hasFilters || guides.length > 0) && (
         <div className="guides__filters">
           <div className="field guides__filter">

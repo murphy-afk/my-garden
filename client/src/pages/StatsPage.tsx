@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { areaKeys, listAreas } from '../api/areas';
+import { messageFor } from '../api/client';
 import { unitLabel } from '../api/harvests';
 import { issueLabel, issueSeverities, severityLabel, type IssueSeverity } from '../api/issues';
 import { speciesKeys, listSpecies } from '../api/species';
@@ -295,6 +296,12 @@ export function StatsPage() {
           </p>
         </div>
       </header>
+
+      {(speciesQuery.isError || areasQuery.isError) && (
+        <p className="alert" role="alert">
+          The filter menus could not be loaded: {messageFor(speciesQuery.error ?? areasQuery.error)}
+        </p>
+      )}
 
       <div className="stats__filters">
         <div className="field stats__filter">
