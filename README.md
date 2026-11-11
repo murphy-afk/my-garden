@@ -15,6 +15,22 @@ npm install
 
 Then create the API configuration file by copying `server/.env.example` to `server/.env`, and fill in your MySQL credentials. The file is gitignored, so real values never reach the repository.
 
+## Database
+
+Create the schema in the database you just pointed at:
+
+```
+npm run db:migrate --workspace server
+```
+
+To see the app with something in it straight away, load the example data:
+
+```
+npm run db:seed --workspace server
+```
+
+The seed adds ten species, three areas and ten guides, and is safe to run again. Skip it to start from an empty garden instead, where the first-run guide walks you through adding your first area.
+
 ## Development
 
 ```
@@ -46,12 +62,14 @@ Every setting comes from environment variables, read by the API from `server/.en
 
 ## Scripts
 
-| Script                 | What it does                          |
-| ---------------------- | ------------------------------------- |
-| `npm run dev`          | Runs client and API together          |
-| `npm run build`        | Typechecks and builds both workspaces |
-| `npm run typecheck`    | Typechecks both workspaces            |
-| `npm run lint`         | Runs ESLint over the whole repository |
+| Script                              | What it does                                  |
+| ----------------------------------- | --------------------------------------------- |
+| `npm run dev`                       | Runs client and API together                  |
+| `npm run build`                     | Typechecks and builds both workspaces         |
+| `npm run typecheck`                 | Typechecks both workspaces                    |
+| `npm run lint`                      | Runs ESLint over the whole repository         |
+| `npm run db:migrate --workspace server`   | Creates or updates the database schema   |
+| `npm run db:seed --workspace server`      | Loads the example species, areas and guides |
 
 ## Layout
 
